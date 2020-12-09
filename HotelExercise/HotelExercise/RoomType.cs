@@ -12,7 +12,7 @@ namespace HotelExercise
         public int Id { get; set; }
         public Hotel Hotel { get; set; }
         [MaxLength(50)]
-        public string Titel { get; set; }
+        public string Title { get; set; }
         [MaxLength(1000)]
         public string Description { get; set; }
         public int Size { get; set; }
