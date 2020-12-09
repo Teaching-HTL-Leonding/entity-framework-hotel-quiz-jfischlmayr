@@ -10,89 +10,110 @@ var factory = new HotelContextFactory();
 using var context = factory.CreateDbContext(args);
 
 Console.WriteLine("Welcome to the Hotel Manager\n");
-Console.WriteLine("First insert some data");
-var keepRunning = 0;
-var addRooms = 0;
-var newHotel = new Hotel();
-var newRoom = new RoomType();
-var newPrice = new Price();
-do
+
+Console.Write("Choose an option (0..add hotel | 1..see existing hotels | 2..exit): ");
+var option = Int32.Parse(Console.ReadLine());
+
+switch (option)
 {
-    Console.Write("Hotelname: ");
-    newHotel.Name = Console.ReadLine();
-
-    Console.Write("Street: ");
-    newHotel.Street = Console.ReadLine();
-
-    Console.Write("Zip Code: ");
-    newHotel.ZIPCode = Int32.Parse(Console.ReadLine());
-
-    Console.Write("City: ");
-    newHotel.City = Console.ReadLine();
-
-    await context.AddAsync(newHotel);
-
-    await context.SaveChangesAsync();
-
-    Console.Write("Specialties: ");
-    var specialties = Console.ReadLine().Split(", ").Select(x => new Specialty { Name = x, Hotel = newHotel });
-
-    Console.WriteLine("Rooms:");
-    newRoom.Hotel = newHotel;
-    do
-    {
-        Console.Write("Amount: ");
-        newRoom.Amount = Int32.Parse(Console.ReadLine());
-
-        Console.Write("Size: ");
-        newRoom.Size = Int32.Parse(Console.ReadLine());
-
-        Console.Write("Title: ");
-        newRoom.Title = Console.ReadLine();
-        
-        Console.Write("Disability access (yes/no): ");
-        var access = Console.ReadLine();
-        if (access == "true")
+    case 0:
+        Console.WriteLine("Insert some data");
+        var keepRunning = 0;
+        var addRooms = 0;
+        var newHotel = new Hotel();
+        var newRoom = new RoomType();
+        var newPrice = new Price();
+        do
         {
-            newRoom.DisabilityAccesible = true;
-        }
-        else
-        {
-            newRoom.DisabilityAccesible = false;
-        }
+            Console.Write("Hotelname: ");
+            newHotel.Name = Console.ReadLine();
 
-        await context.AddAsync(newRoom);
+            Console.Write("Street: ");
+            newHotel.Street = Console.ReadLine();
+
+            Console.Write("Zip Code: ");
+            newHotel.ZIPCode = Int32.Parse(Console.ReadLine());
+
+            Console.Write("City: ");
+            newHotel.City = Console.ReadLine();
+
+            await context.AddAsync(newHotel);
+
+            await context.SaveChangesAsync();
+
+            Console.Write("Specialties: ");
+            var specialties = Console.ReadLine().Split(", ").Select(x => new Specialty { Name = x, Hotel = newHotel });
+
+            Console.WriteLine("Rooms:");
+            newRoom.Hotel = newHotel;
+            do
+            {
+                Console.Write("Amount: ");
+                newRoom.Amount = Int32.Parse(Console.ReadLine());
+
+                Console.Write("Size: ");
+                newRoom.Size = Int32.Parse(Console.ReadLine());
+
+                Console.Write("Title: ");
+                newRoom.Title = Console.ReadLine();
+
+                Console.Write("Disability access (yes/no): ");
+                var access = Console.ReadLine();
+                if (access == "true")
+                {
+                    newRoom.DisabilityAccesible = true;
+                }
+                else
+                {
+                    newRoom.DisabilityAccesible = false;
+                }
+
+                await context.AddAsync(newRoom);
+                await context.SaveChangesAsync();
+
+                Console.Write("Price per night: ");
+                newPrice.PricePerNight = Int32.Parse(Console.ReadLine());
+                newPrice.RoomTypeID = newRoom.Id;
+                newPrice.From = DateTime.Today.AddDays(1);
+                newPrice.To = newPrice.From.AddYears(1);
+
+                Console.Write("Do you wish to add more rooms? (0..no | 1..yes) ");
+                addRooms = Int32.Parse(Console.ReadLine());
+                await context.AddAsync(newPrice);
+            } while (addRooms == 1);
+
+            foreach (var specialty in specialties)
+            {
+                await context.AddAsync(specialty);
+            }
+
+            Console.WriteLine("Added Hotel " + newHotel.Name);
+            Console.Write("Do you wish to continue? (0..no | 1..yes) ");
+
+            keepRunning = Int32.Parse(Console.ReadLine());
+        } while (keepRunning == 1);
+
         await context.SaveChangesAsync();
+        Console.WriteLine("Saved Hotels to Database!");
+        break;
+    case 1:
+        Console.WriteLine("These are all the hotels which are stored in the database");
+        Console.WriteLine("=========================================================");
+        Console.WriteLine();
 
-        Console.Write("Price per night: ");
-        newPrice.PricePerNight = Int32.Parse(Console.ReadLine());
-        newPrice.RoomTypeID = newRoom.Id;
-        newPrice.From = DateTime.Today.AddDays(1);
-        newPrice.To = newPrice.From.AddYears(1);
+        var hotels = await context.Hotel.ToListAsync();
 
-        Console.Write("Do you wish to add more rooms? (0..no | 1..yes) ");
-        addRooms = Int32.Parse(Console.ReadLine());
-        await context.AddAsync(newPrice);
-    } while (addRooms == 1);
+        foreach (var hotel in hotels)
+        {
+            Console.WriteLine($"Hotelname: {hotel.Name}");
+            Console.WriteLine($"Address: {hotel.Address}");
+            Console.WriteLine("-----------------------------------------------------");
 
-    foreach (var specialty in specialties)
-    {
-        await context.AddAsync(specialty);
-    }
-
-    
-
-    Console.WriteLine("Added Hotel " + newHotel.Name);
-    Console.Write("Do you wish to continue? (0..no | 1..yes) ");
-
-    keepRunning = Int32.Parse(Console.ReadLine());
-} while (keepRunning == 1);
-
-await context.SaveChangesAsync();
-Console.WriteLine("Saved Hotels to Database!");
-
-
-
+        }
+        break;
+    default:
+        break;
+}
 
 class HotelContext : DbContext
 {
