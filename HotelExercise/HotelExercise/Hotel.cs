@@ -11,10 +11,10 @@ namespace HotelExercise
         [MaxLength(50)]
         public string Name { get; set; }
         [MaxLength(50)]
-        private string Street { get; set; }
-        private int ZIPCode { get; set; }
+        public string Street { get; set; }
+        public int ZIPCode { get; set; }
         [MaxLength(50)]
-        private string City { get; set; }
+        public string City { get; set; }
         public string Address { get { return Street + ZIPCode + City; } }
     }
 }
