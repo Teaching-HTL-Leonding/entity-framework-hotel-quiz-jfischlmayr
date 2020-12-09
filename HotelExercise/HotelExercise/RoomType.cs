@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using HotelExercise;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HotelExercise
-{
-    class RoomType
+class RoomType
     {
         public int Id { get; set; }
         public Hotel Hotel { get; set; }
@@ -18,5 +12,4 @@ namespace HotelExercise
         public int Size { get; set; }
         public bool DisabilityAccesible { get; set; }
         public int Amount { get; set; }
-    }
 }

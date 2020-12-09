@@ -35,7 +35,7 @@ do
     await context.SaveChangesAsync();
 
     Console.Write("Specialties: ");
-    var specialties = Console.ReadLine().Split(", ").Select(x => new Specialty { Name = x, HotelID = newHotel.Id });
+    var specialties = Console.ReadLine().Split(", ").Select(x => new Specialty { Name = x, Hotel = newHotel });
 
     Console.WriteLine("Rooms:");
     newRoom.Hotel = newHotel;
@@ -59,7 +59,6 @@ do
         else
         {
             newRoom.DisabilityAccesible = false;
-
         }
 
         await context.AddAsync(newRoom);

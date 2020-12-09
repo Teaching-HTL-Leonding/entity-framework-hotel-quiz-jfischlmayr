@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace HotelExercise
-{
-    class Hotel
+public class Hotel
     {
         public int Id { get; set; }
         [MaxLength(50)]
@@ -17,4 +12,3 @@ namespace HotelExercise
         public string City { get; set; }
         public string Address { get { return Street + ZIPCode + City; } }
     }
-}
