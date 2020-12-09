@@ -49,8 +49,21 @@ do
 
         Console.Write("Title: ");
         newRoom.Title = Console.ReadLine();
+        
+        Console.Write("Disability access (yes/no): ");
+        var access = Console.ReadLine();
+        if (access == "true")
+        {
+            newRoom.DisabilityAccesible = true;
+        }
+        else
+        {
+            newRoom.DisabilityAccesible = false;
+
+        }
 
         await context.AddAsync(newRoom);
+        await context.SaveChangesAsync();
 
         Console.Write("Price per night: ");
         newPrice.PricePerNight = Int32.Parse(Console.ReadLine());
@@ -60,6 +73,7 @@ do
 
         Console.Write("Do you wish to add more rooms? (0..no | 1..yes) ");
         addRooms = Int32.Parse(Console.ReadLine());
+        await context.AddAsync(newPrice);
     } while (addRooms == 1);
 
     foreach (var specialty in specialties)

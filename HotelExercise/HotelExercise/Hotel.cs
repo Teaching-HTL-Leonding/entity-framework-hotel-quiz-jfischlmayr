@@ -16,7 +16,5 @@ namespace HotelExercise
         [MaxLength(50)]
         public string City { get; set; }
         public string Address { get { return Street + ZIPCode + City; } }
-        public List<RoomType> RoomTypes { get; set; }
-        public List<Specialty> Specialties { get; set; }
     }
 }
